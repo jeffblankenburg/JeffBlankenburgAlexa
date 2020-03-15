@@ -19,7 +19,7 @@
             "eTag": "1dfee45b60dfe62d93deeb55ffbf44d0"
           },
           "en-US": {
-            "eTag": "ec57477a7215f284df1a7fe909e81833"
+            "eTag": "3d60968bf83fadace0be9d656b7ebadd"
           },
           "en-CA": {
             "eTag": "ae1e9f9337e5e797f7c79c896e998d30"
@@ -65,7 +65,7 @@
             "codeUri": "lambda/custom",
             "functionName": "JeffBlankenburgAlexa",
             "handler": "index.handler",
-            "revisionId": "a5eae212-58d8-4e8f-9c4b-52ab362e54ed",
+            "revisionId": "552d4a0a-f0e7-4701-8e6f-1ebb981a49ac",
             "runtime": "nodejs10.x"
           }
         ]

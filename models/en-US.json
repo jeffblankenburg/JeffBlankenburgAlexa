@@ -74,6 +74,22 @@
                         "for his {lookup}",
                         "{lookup}"
                     ]
+                },
+                {
+                    "name": "FavoriteIntent",
+                    "slots": [
+                        {
+                            "name": "favorite",
+                            "type": "Favorite"
+                        }
+                    ],
+                    "samples": [
+                        "what is his favorite {favorite}",
+                        "what is jeff's favorite {favorite}",
+                        "for his favorite {favorite}",
+                        "favorite {favorite}",
+                        "{favorite}"
+                    ]
                 }
             ],
             "types": [
@@ -131,6 +147,67 @@
                                 "value": "username",
                                 "synonyms": [
                                     "user name", "twitter name", "twitter handle", "handle"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Favorite",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "color",
+                                "synonyms": [
+                                    "hue"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "baseball team",
+                                "synonyms": [
+                                    "MLB team", "major league baseball team", "pro baseball team", "professional baseball team"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "football team",
+                                "synonyms": [
+                                    "NFL team", "team in the NFL", "team in the national football league"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "country",
+                                "synonyms": [
+                                    "country to visit"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "city",
+                                "synonyms": [
+                                    "city to visit"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "vacation spot",
+                                "synonyms": [
+                                    "holiday location"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "avenger",
+                                "synonyms": [
+                                    "one of the avengers"
                                 ]
                             }
                         }

@@ -57,7 +57,7 @@ const MessageIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === "MessageIntent";
     },
     async handle(handlerInput) {
-        var speakOutput = "You can send me a message by saying things like, my message is, or, tell jeff, followed by your message.  He will receive it as a text message.  Give it a try!  Say something like, tell Jeff to visit your city sometime.";
+        var speakOutput = "You can send me a message by saying things like, my message is, or, tell " + firstName + ", followed by your message.  He will receive it as a text message.  Give it a try!  Say something like, tell " + firstName + " to visit your city sometime.";
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -73,7 +73,7 @@ const SendMessageIntentHandler = {
     },
     async handle(handlerInput) {
         var spokenMessage = getSpokenWords(handlerInput, "message");
-        var speakOutput = "Your message, <break time='.5s'/>" + changeVoice(spokenMessage) + "<break time='.5s'/>has been successfully sent to Jeff.  What else would you like to do?";
+        var speakOutput = "Your message, <break time='.5s'/>" + changeVoice(spokenMessage) + "<break time='.5s'/>has been successfully sent to " + firstName + ".  What else would you like to do?";
 
         await sendTextMessage(spokenMessage);
 
@@ -115,18 +115,74 @@ const LookupIntentHandler = {
                 case "social security number":
                     speakOutput = changeVoice("My United States social security number is <audio src='soundbank://soundlibrary/telephones/phone_beeps/phone_beeps_01'/> Let me know how that works out for you. ");
                 break;
-                default:
-                    speakOutput = changeVoice("I didn't save my " + spokenValue + " to this Alexa skill, mostly because I never thought anyone would ask for it.  But here we are.  I'll think about adding it in the future.");
-                    sendTextMessage("Someone wants to know what your [" + spokenValue + "] is.  Weird.");
-                break;
             }
+        }
+        else {
+            speakOutput = changeVoice("I didn't save my " + spokenValue + " to this Alexa skill, mostly because I never thought anyone would ask for it.  But here we are.  I'll think about adding it in the future.");
+            sendTextMessage("Someone wants to know what your [" + spokenValue + "] is.  Weird.");
         }
 
         speakOutput += changeVoice("I've also written my business card to your Alexa app in case you need it later.");
 
+        //withStandardCard(cardTitle: string, cardContent: string, smallImageUrl?: string, largeImageUrl?: string): this;
+
         return handlerInput.responseBuilder
             .speak(speakOutput)
             .reprompt(speakOutput)
+            .withStandardCard("Jeff Blankenburg", "Phone: +1 (614) 327-5066\nEmail: alexa@jeffblankenburg.com\nTwitter: @jeffblankenburg\nTwitch: @jeffblankenburg", "https://s3.amazonaws.com/jeffblankenburg.alexa/images/jeffblankenburg.png", "https://s3.amazonaws.com/jeffblankenburg.alexa/images/jeffblankenburg.png")
+            .getResponse();
+    }
+};
+
+const FavoriteIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest"
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === "FavoriteIntent";
+    },
+    handle(handlerInput) {
+        var speakOutput = Alexa.getIntentName(handlerInput.requestEnvelope);
+
+        var spokenValue = getSpokenWords(handlerInput, "favorite");
+        var resolvedValues = getResolvedWords(handlerInput, "favorite");
+
+        if (resolvedValues != undefined) {
+            switch(resolvedValues[0].value.name.toLowerCase()) {
+                case "color":
+                    speakOutput = changeVoice("I am way too old to have a favorite color.  But it's orange. ");
+                break;
+                case "baseball team":
+                    speakOutput = changeVoice("My favorite baseball team is the Cleveland Indians.  I'd really like to see them win a World Series in my lifetime. ");
+                break;
+                case "football team":
+                    speakOutput = changeVoice("My favorite American football team is the Cleveland Browns.  My favorite soccer team is the Columbus Crew. ");
+                break;
+                case "country":
+                    speakOutput = changeVoice("This is a tricky one.  Obviously, I'm from the United States, and I love my country first.  But I've visited dozens of other countries, and I have to say that I enjoyed India the most. ");
+                break;
+                case "city":
+                    speakOutput = changeVoice("I live in Columbus, Ohio.  But my favorite city, without question, is New York City.  I go back several times a year. ");
+                break;
+                case "vacation spot":
+                    speakOutput = changeVoice("I tend to like variety, so my favorite vacation spot is where ever I currently am.  That being said, I also went to the Outer Banks of North Carolina for 15 years straight, and loved every one of them. ");
+                break;
+                case "avenger":
+                    speakOutput = changeVoice("I find that it varies.  I think I most like Tony Stark.  But Hulk, Spiderman, Deadpool, Star Lord, and Captain America are all high on my list. ");
+                break;
+            }
+        }
+        else {
+            speakOutput = changeVoice("I don't currently have a favorite " + spokenValue + ".  At least, I didn't add it to this skill.  I'll think about what I should say, and add it here in the future. ");
+            sendTextMessage("Someone wants to know what your favorite [" + spokenValue + "] is.  Weird.");
+        }
+
+        //speakOutput += changeVoice("I've also written my business card to your Alexa app in case you need it later.");
+
+        //withStandardCard(cardTitle: string, cardContent: string, smallImageUrl?: string, largeImageUrl?: string): this;
+
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(speakOutput)
+            //.withStandardCard("Jeff Blankenburg", "Phone: +1 (614) 327-5066\nEmail: alexa@jeffblankenburg.com\nTwitter: @jeffblankenburg\nTwitch: @jeffblankenburg", "https://s3.amazonaws.com/jeffblankenburg.alexa/images/jeffblankenburg.png", "https://s3.amazonaws.com/jeffblankenburg.alexa/images/jeffblankenburg.png")
             .getResponse();
     }
 };
@@ -309,6 +365,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         MessageIntentHandler,
         SendMessageIntentHandler,
         LookupIntentHandler,
+        FavoriteIntentHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
         FallbackIntentHandler,
