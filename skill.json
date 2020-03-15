@@ -1,32 +1,58 @@
 {
   "manifest": {
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "uri": "JeffBlankenburgAlexa",
+          "sourceDir": "lambda/us-east-1_JeffBlankenburgAlexa"
+        }
+      }
+    },
+    "manifestVersion": "1.0",
+    "privacyAndCompliance": {
+      "locales": {
+        "en-US": {}
+      },
+      "allowsPurchases": false,
+      "usesPersonalInfo": false,
+      "isChildDirected": false,
+      "isExportCompliant": true,
+      "containsAds": false
+    },
     "publishingInformation": {
       "locales": {
         "en-US": {
-          "name": "JeffBlankenburgAlexa",
-          "summary": "Sample Short Description",
-          "description": "Sample Full Description",
+          "name": "Jeff Blankenburg",
+          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/ba6f/9f603bf1ca4b41369becd2194af21382/APP_ICON?versionId=R6h63tzZldLatH04HcyLHmFx2sM0s_sD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200315T013144Z&X-Amz-SignedHeaders=host&X-Amz-Expires=86400&X-Amz-Credential=AKIAJFEYRBGIHK2BBYKA%2F20200315%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=e61cd3b7b9392e8ef220bf3fdfa0f806243555ea0c28474d6b81f6e8da6b8505",
+          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/8a06/99b352affb6044e9a09a82bf45545a3c/APP_ICON_LARGE?versionId=O0aJEY_FV0cB6SBf6MmYEb_OOZki8Jw.&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200315T013144Z&X-Amz-SignedHeaders=host&X-Amz-Expires=86400&X-Amz-Credential=AKIAJFEYRBGIHK2BBYKA%2F20200315%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=e6411ccd582323b7a2d4d83e3d4e77893dfd884ad78d2e60bdcff4ea0d4b5c43",
+          "summary": "This is a skill all about Jeff Blankenburg.  You can ask for his contact information, his favorites, or even his latest tweets.",
+          "description": "This is a skill all about Jeff Blankenburg.  You can ask for his contact information, his favorites, or even his latest tweets.  You can also send him text messages just by speaking.  He would love to hear from you.",
           "examplePhrases": [
-            "Alexa open hello world",
-            "hello",
-            "help"
+            "Alexa ask Jeff Blankenburg",
+            "send him a message",
+            "what is your favorite city"
           ],
-          "keywords": []
+          "keywords": [
+            "blankenburg",
+            "jeff",
+            "twitter",
+            "jeffblankenburg"
+          ]
         }
       },
       "isAvailableWorldwide": true,
       "testingInstructions": "Sample Testing Instructions.",
-      "category": "KNOWLEDGE_AND_TRIVIA",
-      "distributionCountries": []
-    },
-    "apis": {
-      "custom": {
-        "endpoint": {
-          "sourceDir": "lambda/custom",
-          "uri": "JeffBlankenburgAlexa"
-        }
+      "category": "COMMUNICATION",
+      "distributionCountries": [],
+      "automaticDistribution": {
+        "isActive": true,
+        "sourceLocaleForLanguages": [
+          {
+            "language": "en",
+            "sourceLocale": "en-US"
+          }
+        ]
       }
-    },
-    "manifestVersion": "1.0"
+    }
   }
 }
