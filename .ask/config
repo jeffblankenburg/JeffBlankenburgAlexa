@@ -1,9 +1,75 @@
 {
   "deploy_settings": {
     "default": {
-      "skill_id": "",
+      "skill_id": "amzn1.ask.skill.4e83633a-a46e-4f16-8318-9d3d9cc6be90",
       "was_cloned": false,
-      "merge": {}
+      "merge": {},
+      "resources": {
+        "manifest": {
+          "eTag": "5dc6f1631d697d919044a1591b87169b"
+        },
+        "interactionModel": {
+          "de-DE": {
+            "eTag": "72d30fb113cbe761171e75d236d86736"
+          },
+          "en-AU": {
+            "eTag": "aa20b8fb388e90c18a3d5d464ca1a717"
+          },
+          "en-GB": {
+            "eTag": "1dfee45b60dfe62d93deeb55ffbf44d0"
+          },
+          "en-US": {
+            "eTag": "ec57477a7215f284df1a7fe909e81833"
+          },
+          "en-CA": {
+            "eTag": "ae1e9f9337e5e797f7c79c896e998d30"
+          },
+          "es-ES": {
+            "eTag": "beae2ead347ff5475b8b875805ba285b"
+          },
+          "es-US": {
+            "eTag": "13317e9d4779b54480b7370f095c96da"
+          },
+          "en-IN": {
+            "eTag": "73479766b3b835fa1901798f949d55ea"
+          },
+          "fr-CA": {
+            "eTag": "5f0b320933632b7c8435cdccec6b42dd"
+          },
+          "hi-IN": {
+            "eTag": "7a7f800690eb193e901bc111bd894137"
+          },
+          "ja-JP": {
+            "eTag": "80b62ba0d6173cc7334736d2e8887d04"
+          },
+          "es-MX": {
+            "eTag": "42ce8f5c93a37404882516b1f7e11e93"
+          },
+          "it-IT": {
+            "eTag": "718347a2494da87a47ecd4018664e664"
+          },
+          "fr-FR": {
+            "eTag": "8c507df06ee1ee1fccb916c42c7f1312"
+          },
+          "pt-BR": {
+            "eTag": "41196c9c47dcf997b982563372554840"
+          }
+        },
+        "lambda": [
+          {
+            "alexaUsage": [
+              "custom/default"
+            ],
+            "arn": "arn:aws:lambda:us-east-1:679180307287:function:JeffBlankenburgAlexa",
+            "awsRegion": "us-east-1",
+            "codeUri": "lambda/custom",
+            "functionName": "JeffBlankenburgAlexa",
+            "handler": "index.handler",
+            "revisionId": "a5eae212-58d8-4e8f-9c4b-52ab362e54ed",
+            "runtime": "nodejs10.x"
+          }
+        ]
+      }
     }
   }
 }

@@ -1,7 +1,7 @@
 {
     "interactionModel": {
         "languageModel": {
-            "invocationName": "hello world",
+            "invocationName": "jeff blankenburg",
             "intents": [
                 {
                     "name": "AMAZON.CancelIntent",
@@ -16,16 +16,40 @@
                     "samples": []
                 },
                 {
-                    "name": "HelloWorldIntent",
+                    "name": "TwitterIntent",
                     "slots": [],
                     "samples": [
-                        "hello",
-                        "how are you",
-                        "say hi world",
-                        "say hi",
-                        "hi",
-                        "say hello world",
-                        "say hello"
+                        "twitter",
+                        "read me his latest tweets",
+                        "latest tweets",
+                        "what did he tweet",
+                        "for his tweets",
+                        "for his latest tweets"
+                    ]
+                },
+                {
+                    "name": "MessageIntent",
+                    "slots": [],
+                    "samples": [
+                        "send jeff a message",
+                        "send a message",
+                        "message",
+                        "send him a message"
+                    ]
+                },
+                {
+                    "name": "SendMessageIntent",
+                    "slots": [
+                        {
+                            "name": "message",
+                            "type": "AMAZON.SearchQuery"
+                        }
+                    ],
+                    "samples": [
+                        "my message is {message}",
+                        "tell him {message}",
+                        "tell jeff {message}",
+                        "say {message}"
                     ]
                 },
                 {
@@ -35,9 +59,84 @@
                 {
                     "name": "AMAZON.FallbackIntent",
                     "samples": []
+                },
+                {
+                    "name": "LookupIntent",
+                    "slots": [
+                        {
+                            "name": "lookup",
+                            "type": "Lookup"
+                        }
+                    ],
+                    "samples": [
+                        "what is his {lookup}",
+                        "what is jeff's {lookup}",
+                        "for his {lookup}",
+                        "{lookup}"
+                    ]
                 }
             ],
-            "types": []
+            "types": [
+                {
+                    "name": "Lookup",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "password",
+                                "synonyms": [
+                                    "pass word"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "blood type"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "social security number",
+                                "synonyms": [
+                                    "social", "social security"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "email address",
+                                "synonyms": [
+                                    "email"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "phone number",
+                                "synonyms": [
+                                    "number",
+                                    "digits"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "linked in",
+                                "synonyms": [
+                                    "linked in username"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "username",
+                                "synonyms": [
+                                    "user name", "twitter name", "twitter handle", "handle"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
         }
     }
 }
