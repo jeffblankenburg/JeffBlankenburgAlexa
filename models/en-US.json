@@ -231,6 +231,14 @@
                                     "car", "truck", "SUV"
                                 ]
                             }
+                        },
+                        {
+                            "name": {
+                                "value": "restaurant",
+                                "synonyms": [
+                                    "fast food", "coffee shop"
+                                ]
+                            }
                         }
                     ]
                 }

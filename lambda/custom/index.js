@@ -19,12 +19,11 @@ const LaunchRequestHandler = {
     },
     async handle(handlerInput) {
         console.log("<=== " + Alexa.getRequestType(handlerInput.requestEnvelope).toUpperCase() + " HANDLER ===>");
-        var speakOutput = Alexa.getRequestType(handlerInput.requestEnvelope);
         const locale = handlerInput.requestEnvelope.request.locale;
         var welcome = await getRandomSpeech("Welcome", locale);
         var actionQuery = await getRandomSpeech("ActionQuery", locale);
 
-        speakOutput = changeVoice(welcome + " " + actionQuery);
+        var speakOutput = changeVoice(welcome + " " + actionQuery);
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -43,7 +42,7 @@ const TwitterIntentHandler = {
         const locale = handlerInput.requestEnvelope.request.locale;
         var actionQuery = await getRandomSpeech("ActionQuery", locale);
 
-
+        //TODO: Could we allow them to sort or filter based on likes, or retweets?
         var speakOutput = await new Promise((resolve, reject) => { twitter.get("statuses/user_timeline", {screen_name: twitterHandle, count:7, exclude_replies:true, include_rts:false, trim_user:true}, 
             function(error, tweets, response) {
                 if(error) throw error;
@@ -107,13 +106,14 @@ const LookupIntentHandler = {
     },
     async handle(handlerInput) {
         console.log("<=== " + Alexa.getIntentName(handlerInput.requestEnvelope).toUpperCase() + " HANDLER ===>");
-        var speakOutput = Alexa.getIntentName(handlerInput.requestEnvelope);
         const locale = handlerInput.requestEnvelope.request.locale;
 
         var spokenValue = getSpokenWords(handlerInput, "lookup");
         var resolvedValues = getResolvedWords(handlerInput, "lookup");
 
         var actionQuery = await getRandomSpeech("ActionQuery", locale);
+
+        var speakOutput = "";
 
         if (resolvedValues != undefined) {
             switch(resolvedValues[0].value.name.toLowerCase()) {
@@ -163,12 +163,13 @@ const FavoriteIntentHandler = {
     async handle(handlerInput) {
         console.log("<=== " + Alexa.getIntentName(handlerInput.requestEnvelope).toUpperCase() + " HANDLER ===>");
         const locale = handlerInput.requestEnvelope.request.locale;
-        var speakOutput = Alexa.getIntentName(handlerInput.requestEnvelope);
 
         var spokenValue = getSpokenWords(handlerInput, "favorite");
         var resolvedValues = getResolvedWords(handlerInput, "favorite");
 
         var actionQuery = await getRandomSpeech("ActionQuery", locale);
+
+        var speakOutput = "";
 
         if (resolvedValues != undefined) {
             switch(resolvedValues[0].value.name.toLowerCase()) {
@@ -195,6 +196,9 @@ const FavoriteIntentHandler = {
                 break;
                 case "vehicle":
                     speakOutput = changeVoice("I currently drive a Jeep Wrangler. I honestly can't imagine driving anything else. I love being able to take my car apart in the summer.  No doors, no roof.  It's amazing. " + actionQuery);
+                break;
+                case "restaurant":
+                    speakOutput = changeVoice("My favorite restaurant is Molly Woo's, in Columbus, Ohio.  But I actually love lots of restaurants.  My fast food restaurant is a drive-in burger place called Swenson's, which is also only located in Ohio. " + actionQuery);
                 break;
             }
         }
@@ -260,7 +264,7 @@ const FallbackIntentHandler = {
         const locale = handlerInput.requestEnvelope.request.locale;
         const actionQuery = await getRandomSpeech("ActionQuery", locale);
         const fallback = await getRandomSpeech("Fallback", locale);
-        const speakOutput = fallback + " " + actionQuery;
+        const speakOutput = changeVoice(fallback + " " + actionQuery);
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
