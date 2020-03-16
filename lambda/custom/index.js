@@ -1,6 +1,7 @@
 const Alexa = require("ask-sdk-core");
 const AWS = require("aws-sdk");
 const Twitter = require("twitter");
+const https = require("https");
 
 var twitter = new Twitter({
     consumer_key: process.env.twitter_api_key,
@@ -17,13 +18,17 @@ const LaunchRequestHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === "LaunchRequest";
     },
     async handle(handlerInput) {
+        console.log("<=== " + Alexa.getRequestType(handlerInput.requestEnvelope).toUpperCase() + " HANDLER ===>");
         var speakOutput = Alexa.getRequestType(handlerInput.requestEnvelope);
+        const locale = handlerInput.requestEnvelope.request.locale;
+        var welcome = await getRandomSpeech("Welcome", locale);
+        var actionQuery = await getRandomSpeech("ActionQuery", locale);
 
-        speakOutput = changeVoice("Hi.  This is Jeff Blankenburg.  What do you want to know?  You can ask to hear my latest tweets.");
+        speakOutput = changeVoice(welcome + " " + actionQuery);
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
-            .reprompt(speakOutput)
+            .reprompt(changeVoice(actionQuery))
             .getResponse();
     }
 };
@@ -34,6 +39,11 @@ const TwitterIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === "TwitterIntent";
     },
     async handle(handlerInput) {
+        console.log("<=== " + Alexa.getIntentName(handlerInput.requestEnvelope).toUpperCase() + " HANDLER ===>");
+        const locale = handlerInput.requestEnvelope.request.locale;
+        var actionQuery = await getRandomSpeech("ActionQuery", locale);
+
+
         var speakOutput = await new Promise((resolve, reject) => { twitter.get("statuses/user_timeline", {screen_name: twitterHandle, count:7, exclude_replies:true, include_rts:false, trim_user:true}, 
             function(error, tweets, response) {
                 if(error) throw error;
@@ -46,7 +56,7 @@ const TwitterIntentHandler = {
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
-            .reprompt("add a reprompt if you want to keep the session open for the user to respond")
+            .reprompt(changeVoice(actionQuery))
             .getResponse();
     }
 };
@@ -57,11 +67,14 @@ const MessageIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === "MessageIntent";
     },
     async handle(handlerInput) {
+        console.log("<=== " + Alexa.getIntentName(handlerInput.requestEnvelope).toUpperCase() + " HANDLER ===>");
+        const locale = handlerInput.requestEnvelope.request.locale;
+        var actionQuery = await getRandomSpeech("ActionQuery", locale);
         var speakOutput = "You can send me a message by saying things like, my message is, or, tell " + firstName + ", followed by your message.  He will receive it as a text message.  Give it a try!  Say something like, tell " + firstName + " to visit your city sometime.";
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
-            .reprompt("add a reprompt if you want to keep the session open for the user to respond")
+            .reprompt(changeVoice(actionQuery))
             .getResponse();
     }
 };
@@ -72,14 +85,17 @@ const SendMessageIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === "SendMessageIntent";
     },
     async handle(handlerInput) {
+        console.log("<=== " + Alexa.getIntentName(handlerInput.requestEnvelope).toUpperCase() + " HANDLER ===>");
+        const locale = handlerInput.requestEnvelope.request.locale;
+        var actionQuery = await getRandomSpeech("ActionQuery", locale);
         var spokenMessage = getSpokenWords(handlerInput, "message");
-        var speakOutput = "Your message, <break time='.5s'/>" + changeVoice(spokenMessage) + "<break time='.5s'/>has been successfully sent to " + firstName + ".  What else would you like to do?";
+        var speakOutput = changeVoice("Your message, <break time='.5s'/>" + changeVoice(spokenMessage) + "<break time='.5s'/>has been successfully sent to " + firstName + ". " + actionQuery);
 
         await sendTextMessage(spokenMessage);
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
-            .reprompt("add a reprompt if you want to keep the session open for the user to respond")
+            .reprompt(changeVoice(actionQuery))
             .getResponse();
     }
 };
@@ -89,11 +105,15 @@ const LookupIntentHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest"
             && Alexa.getIntentName(handlerInput.requestEnvelope) === "LookupIntent";
     },
-    handle(handlerInput) {
+    async handle(handlerInput) {
+        console.log("<=== " + Alexa.getIntentName(handlerInput.requestEnvelope).toUpperCase() + " HANDLER ===>");
         var speakOutput = Alexa.getIntentName(handlerInput.requestEnvelope);
+        const locale = handlerInput.requestEnvelope.request.locale;
 
         var spokenValue = getSpokenWords(handlerInput, "lookup");
         var resolvedValues = getResolvedWords(handlerInput, "lookup");
+
+        var actionQuery = await getRandomSpeech("ActionQuery", locale);
 
         if (resolvedValues != undefined) {
             switch(resolvedValues[0].value.name.toLowerCase()) {
@@ -107,28 +127,29 @@ const LookupIntentHandler = {
                     speakOutput = changeVoice("I'm not sure why you would need to know my blood type, but I'm not even sure.  I'll ask my doctor at my next appointment. ");
                 break;
                 case "password":
-                    speakOutput = changeVoice("The password I use for most accounts is <audio src='soundbank://soundlibrary/alarms/beeps_and_bloops/woosh_04'/><audio src='soundbank://soundlibrary/alarms/beeps_and_bloops/boing_03'/>  The spelling can be a little tricky, but I'm confident you can get it.");
+                    speakOutput = changeVoice("The password I use for most accounts is <audio src='soundbank://soundlibrary/alarms/beeps_and_bloops/woosh_04'/><audio src='soundbank://soundlibrary/alarms/beeps_and_bloops/boing_03'/>  The spelling can be a little tricky, but I'm confident you can get it. ");
                 break;
                 case "username":
-                    speakOutput = changeVoice("For pretty much everything, you can find me as jeff blankenburg.  All one word.  This includes Twitter, Linked In, You Tube, and Twitch, among other things.");
+                    speakOutput = changeVoice("For pretty much everything, you can find me as jeff blankenburg.  All one word.  This includes Twitter, Linked In, You Tube, and Twitch, among other things. ");
                 break;
                 case "social security number":
                     speakOutput = changeVoice("My United States social security number is <audio src='soundbank://soundlibrary/telephones/phone_beeps/phone_beeps_01'/> Let me know how that works out for you. ");
                 break;
+                case "website":
+                    speakOutput = changeVoice("I actually have two websites.  The website with all of my information on it is jeff blankenburg dot info.  I also have a blog, with articles on all sorts of subjects.  You can find that at jeff blankenburg dot com. ");
+                break;
             }
         }
         else {
-            speakOutput = changeVoice("I didn't save my " + spokenValue + " to this Alexa skill, mostly because I never thought anyone would ask for it.  But here we are.  I'll think about adding it in the future.");
+            speakOutput = changeVoice("I didn't save my " + spokenValue + " to this Alexa skill, mostly because I never thought anyone would ask for it.  But here we are.  I'll think about adding it in the future. ");
             sendTextMessage("Someone wants to know what your [" + spokenValue + "] is.  Weird.");
         }
 
-        speakOutput += changeVoice("I've also written my business card to your Alexa app in case you need it later.");
-
-        //withStandardCard(cardTitle: string, cardContent: string, smallImageUrl?: string, largeImageUrl?: string): this;
+        speakOutput += changeVoice("I've also written my business card to your Alexa app in case you need it later. " + actionQuery);
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
-            .reprompt(speakOutput)
+            .reprompt(changeVoice(actionQuery))
             .withStandardCard("Jeff Blankenburg", "Phone: +1 (614) 327-5066\nEmail: alexa@jeffblankenburg.com\nTwitter: @jeffblankenburg\nTwitch: @jeffblankenburg", "https://s3.amazonaws.com/jeffblankenburg.alexa/images/jeffblankenburg.png", "https://s3.amazonaws.com/jeffblankenburg.alexa/images/jeffblankenburg.png")
             .getResponse();
     }
@@ -139,50 +160,52 @@ const FavoriteIntentHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest"
             && Alexa.getIntentName(handlerInput.requestEnvelope) === "FavoriteIntent";
     },
-    handle(handlerInput) {
+    async handle(handlerInput) {
+        console.log("<=== " + Alexa.getIntentName(handlerInput.requestEnvelope).toUpperCase() + " HANDLER ===>");
+        const locale = handlerInput.requestEnvelope.request.locale;
         var speakOutput = Alexa.getIntentName(handlerInput.requestEnvelope);
 
         var spokenValue = getSpokenWords(handlerInput, "favorite");
         var resolvedValues = getResolvedWords(handlerInput, "favorite");
 
+        var actionQuery = await getRandomSpeech("ActionQuery", locale);
+
         if (resolvedValues != undefined) {
             switch(resolvedValues[0].value.name.toLowerCase()) {
                 case "color":
-                    speakOutput = changeVoice("I am way too old to have a favorite color.  But it's orange. ");
+                    speakOutput = changeVoice("I am way too old to have a favorite color.  But it's orange. " + actionQuery);
                 break;
                 case "baseball team":
-                    speakOutput = changeVoice("My favorite baseball team is the Cleveland Indians.  I'd really like to see them win a World Series in my lifetime. ");
+                    speakOutput = changeVoice("My favorite baseball team is the Cleveland Indians.  I'd really like to see them win a World Series in my lifetime. " + actionQuery);
                 break;
                 case "football team":
-                    speakOutput = changeVoice("My favorite American football team is the Cleveland Browns.  My favorite soccer team is the Columbus Crew. ");
+                    speakOutput = changeVoice("My favorite American football team is the Cleveland Browns.  My favorite soccer team is the Columbus Crew. " + actionQuery);
                 break;
                 case "country":
-                    speakOutput = changeVoice("This is a tricky one.  Obviously, I'm from the United States, and I love my country first.  But I've visited dozens of other countries, and I have to say that I enjoyed India the most. ");
+                    speakOutput = changeVoice("This is a tricky one.  Obviously, I'm from the United States, and I love my country first.  But I've visited dozens of other countries, and I have to say that I enjoyed India the most. " + actionQuery);
                 break;
                 case "city":
-                    speakOutput = changeVoice("I live in Columbus, Ohio.  But my favorite city, without question, is New York City.  I go back several times a year. ");
+                    speakOutput = changeVoice("I live in Columbus, Ohio.  But my favorite city, without question, is New York City.  I go back several times a year. " + actionQuery);
                 break;
                 case "vacation spot":
-                    speakOutput = changeVoice("I tend to like variety, so my favorite vacation spot is where ever I currently am.  That being said, I also went to the Outer Banks of North Carolina for 15 years straight, and loved every one of them. ");
+                    speakOutput = changeVoice("I tend to like variety, so my favorite vacation spot is where ever I currently am.  That being said, I also went to the Outer Banks of North Carolina for 15 years straight, and loved every one of them. " + actionQuery);
                 break;
                 case "avenger":
-                    speakOutput = changeVoice("I find that it varies.  I think I most like Tony Stark.  But Hulk, Spiderman, Deadpool, Star Lord, and Captain America are all high on my list. ");
+                    speakOutput = changeVoice("I find that it varies.  I think I most like Tony Stark.  But Hulk, Spiderman, Deadpool, Star Lord, and Captain America are all high on my list. " + actionQuery);
+                break;
+                case "vehicle":
+                    speakOutput = changeVoice("I currently drive a Jeep Wrangler. I honestly can't imagine driving anything else. I love being able to take my car apart in the summer.  No doors, no roof.  It's amazing. " + actionQuery);
                 break;
             }
         }
         else {
-            speakOutput = changeVoice("I don't currently have a favorite " + spokenValue + ".  At least, I didn't add it to this skill.  I'll think about what I should say, and add it here in the future. ");
+            speakOutput = changeVoice("I don't currently have a favorite " + spokenValue + ".  At least, I didn't add it to this skill.  I'll think about what I should say, and add it here in the future. " + actionQuery);
             sendTextMessage("Someone wants to know what your favorite [" + spokenValue + "] is.  Weird.");
         }
 
-        //speakOutput += changeVoice("I've also written my business card to your Alexa app in case you need it later.");
-
-        //withStandardCard(cardTitle: string, cardContent: string, smallImageUrl?: string, largeImageUrl?: string): this;
-
         return handlerInput.responseBuilder
             .speak(speakOutput)
-            .reprompt(speakOutput)
-            //.withStandardCard("Jeff Blankenburg", "Phone: +1 (614) 327-5066\nEmail: alexa@jeffblankenburg.com\nTwitter: @jeffblankenburg\nTwitch: @jeffblankenburg", "https://s3.amazonaws.com/jeffblankenburg.alexa/images/jeffblankenburg.png", "https://s3.amazonaws.com/jeffblankenburg.alexa/images/jeffblankenburg.png")
+            .reprompt(changeVoice(actionQuery))
             .getResponse();
     }
 };
@@ -192,12 +215,16 @@ const HelpIntentHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest"
             && Alexa.getIntentName(handlerInput.requestEnvelope) === "AMAZON.HelpIntent";
     },
-    handle(handlerInput) {
-        const speakOutput = Alexa.getIntentName(handlerInput.requestEnvelope);
+    async handle(handlerInput) {
+        console.log("<=== " + Alexa.getIntentName(handlerInput.requestEnvelope).toUpperCase() + " HANDLER ===>");
+        const locale = handlerInput.requestEnvelope.request.locale;
+        var actionQuery = await getRandomSpeech("ActionQuery", locale);
+        var help = await getRandomSpeech("Help", locale);
+        const speakOutput = changeVoice(help + " " + actionQuery);
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
-            .reprompt(speakOutput)
+            .reprompt(changeVoice(actionQuery))
             .getResponse();
     }
 };
@@ -208,11 +235,13 @@ const CancelAndStopIntentHandler = {
             && (Alexa.getIntentName(handlerInput.requestEnvelope) === "AMAZON.CancelIntent"
                 || Alexa.getIntentName(handlerInput.requestEnvelope) === "AMAZON.StopIntent");
     },
-    handle(handlerInput) {
-        const speakOutput = Alexa.getIntentName(handlerInput.requestEnvelope);
+    async handle(handlerInput) {
+        console.log("<=== " + Alexa.getIntentName(handlerInput.requestEnvelope).toUpperCase() + " HANDLER ===>");
+        const locale = handlerInput.requestEnvelope.request.locale;
+        const speakOutput = await getRandomSpeech("Goodbye", locale);
 
         return handlerInput.responseBuilder
-            .speak(speakOutput)
+            .speak(changeVoice(speakOutput))
             .getResponse();
     }
 };
@@ -226,12 +255,16 @@ const FallbackIntentHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest"
             && Alexa.getIntentName(handlerInput.requestEnvelope) === "AMAZON.FallbackIntent";
     },
-    handle(handlerInput) {
-        const speakOutput = Alexa.getIntentName(handlerInput.requestEnvelope);
+    async handle(handlerInput) {
+        console.log("<=== " + Alexa.getIntentName(handlerInput.requestEnvelope).toUpperCase() + " HANDLER ===>");
+        const locale = handlerInput.requestEnvelope.request.locale;
+        const actionQuery = await getRandomSpeech("ActionQuery", locale);
+        const fallback = await getRandomSpeech("Fallback", locale);
+        const speakOutput = fallback + " " + actionQuery;
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
-            .reprompt(speakOutput)
+            .reprompt(changeVoice(actionQuery))
             .getResponse();
     }
 };
@@ -244,7 +277,8 @@ const SessionEndedRequestHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === "SessionEndedRequest";
     },
-    handle(handlerInput) {
+    async handle(handlerInput) {
+        console.log("<=== " + Alexa.getRequestType(handlerInput.requestEnvelope).toUpperCase() + " HANDLER ===>");
         console.log(`~~~~ Session ended: ${JSON.stringify(handlerInput.requestEnvelope)}`);
         // Any cleanup logic goes here.
         return handlerInput.responseBuilder.getResponse(); // notice we send an empty response
@@ -259,13 +293,15 @@ const IntentReflectorHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest";
     },
-    handle(handlerInput) {
-        const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
-        const speakOutput = Alexa.getIntentName(handlerInput.requestEnvelope);
+    async handle(handlerInput) {
+        console.log("<=== INTENT REFLECTOR HANDLER ===>");
+        const locale = handlerInput.requestEnvelope.request.locale;
+        const actionQuery = await getRandomSpeech("ActionQuery", locale);
+        const speakOutput = changeVoice(Alexa.getIntentName(handlerInput.requestEnvelope) + " " + actionQuery);
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
-            //.reprompt("add a reprompt if you want to keep the session open for the user to respond")
+            .reprompt(changeVoice(actionQuery))
             .getResponse();
     }
 };
@@ -278,7 +314,8 @@ const ErrorHandler = {
     canHandle() {
         return true;
     },
-    handle(handlerInput, error) {
+    async handle(handlerInput, error) {
+        console.log("<=== ERROR HANDLER ===>");
         const speakOutput = "<audio src='soundbank://soundlibrary/scifi/amzn_sfx_scifi_alarm_03'/>" + Alexa.getRequestType(handlerInput.requestEnvelope);
         console.log(`~~~~ Error handled: ${JSON.stringify(error.stack)}`);
 
@@ -340,6 +377,34 @@ function getResolvedWords(handlerInput, slot) {
         && handlerInput.requestEnvelope.request.intent.slots[slot].resolutions.resolutionsPerAuthority[0].values[0])
         return handlerInput.requestEnvelope.request.intent.slots[slot].resolutions.resolutionsPerAuthority[0].values
     else return undefined;
+}
+
+async function getRandomSpeech(table, locale) {
+    const response = await httpGet(process.env.airtable_base_speech, "&filterByFormula=AND(IsDisabled%3DFALSE(),Locale%3D%22" + encodeURIComponent(locale) + "%22)", table);
+    const speech = getRandomItem(response.records);
+    console.log("RANDOM [" + table.toUpperCase() + "] = " + JSON.stringify(speech));
+    return speech.fields.VoiceResponse;
+}
+
+function getRandomItem(items) {
+    var random = getRandom(0, items.length-1);
+    return items[random];
+}
+
+function getRandom(min, max){
+    return Math.floor(Math.random() * (max-min+1)+min);
+}
+
+function httpGet(base, filter, table = "Data"){
+    var options = { host: "api.airtable.com", port: 443, path: "/v0/" + base + "/" + table + "?api_key=" + process.env.airtable_api_key + filter, method: "GET"};
+    console.log("FULL PATH = http://" + options.host + options.path);
+    return new Promise(((resolve, reject) => { const request = https.request(options, (response) => { response.setEncoding("utf8");let returnData = "";
+        if (response.statusCode < 200 || response.statusCode >= 300) { return reject(new Error(`${response.statusCode}: ${response.req.getHeader("host")} ${response.req.path}`));}
+        response.on("data", (chunk) => { returnData += chunk; });
+        response.on("end", () => { resolve(JSON.parse(returnData)); });
+        response.on("error", (error) => { reject(error);});});
+        request.end();
+    }));
 }
 
 const RequestLog = {

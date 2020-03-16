@@ -6,7 +6,7 @@
       "merge": {},
       "resources": {
         "manifest": {
-          "eTag": "5dc6f1631d697d919044a1591b87169b"
+          "eTag": "d24cc3df8a11386191e226ebb8e3b693"
         },
         "interactionModel": {
           "de-DE": {
@@ -19,7 +19,7 @@
             "eTag": "1dfee45b60dfe62d93deeb55ffbf44d0"
           },
           "en-US": {
-            "eTag": "3d60968bf83fadace0be9d656b7ebadd"
+            "eTag": "8bd26e1f04cf7bf134bb52f78d9b349b"
           },
           "en-CA": {
             "eTag": "ae1e9f9337e5e797f7c79c896e998d30"
@@ -65,7 +65,7 @@
             "codeUri": "lambda/custom",
             "functionName": "JeffBlankenburgAlexa",
             "handler": "index.handler",
-            "revisionId": "552d4a0a-f0e7-4701-8e6f-1ebb981a49ac",
+            "revisionId": "759b7f39-b8ee-45e0-9ead-35cead19d182",
             "runtime": "nodejs10.x"
           }
         ]

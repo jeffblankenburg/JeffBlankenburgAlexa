@@ -49,7 +49,8 @@
                         "my message is {message}",
                         "tell him {message}",
                         "tell jeff {message}",
-                        "say {message}"
+                        "say {message}",
+                        "this message {message}"
                     ]
                 },
                 {
@@ -72,7 +73,9 @@
                         "what is his {lookup}",
                         "what is jeff's {lookup}",
                         "for his {lookup}",
-                        "{lookup}"
+                        "{lookup}",
+                        "does he have a {lookup}",
+                        "about his {lookup}"
                     ]
                 },
                 {
@@ -86,7 +89,9 @@
                     "samples": [
                         "what is his favorite {favorite}",
                         "what is jeff's favorite {favorite}",
+                        "what is your favorite {favorite}",
                         "for his favorite {favorite}",
+                        "his favorite {favorite}",
                         "favorite {favorite}",
                         "{favorite}"
                     ]
@@ -146,7 +151,15 @@
                             "name": {
                                 "value": "username",
                                 "synonyms": [
-                                    "user name", "twitter name", "twitter handle", "handle"
+                                    "user name", "twitter name", "twitter handle", "handle", "github", "twitch handle", "twitch name", "github name"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "website",
+                                "synonyms": [
+                                    "web site", "home page", "blog"
                                 ]
                             }
                         }
@@ -208,6 +221,14 @@
                                 "value": "avenger",
                                 "synonyms": [
                                     "one of the avengers"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "vehicle",
+                                "synonyms": [
+                                    "car", "truck", "SUV"
                                 ]
                             }
                         }
