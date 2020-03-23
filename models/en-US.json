@@ -16,6 +16,24 @@
                     "samples": []
                 },
                 {
+                    "name": "LampIntent",
+                    "slots": [
+                        {
+                            "name": "color",
+                            "type": "AMAZON.Color"
+                        }],
+                    "samples": [
+                        "change the light to {color}",
+                        "set the lamp to {color}",
+                        "{color}",
+                        "change the lamp to {color}",
+                        "set the light to {color}",
+                        "make the light {color}",
+                        "i'm feeling {color}",
+                        "set the mood to {color}"
+                    ]
+                },
+                {
                     "name": "TwitterIntent",
                     "slots": [],
                     "samples": [

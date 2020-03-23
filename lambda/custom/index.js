@@ -214,6 +214,27 @@ const FavoriteIntentHandler = {
     }
 };
 
+const LampIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest"
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === "LampIntent";
+    },
+    async handle(handlerInput) {
+        console.log("<=== " + Alexa.getIntentName(handlerInput.requestEnvelope).toUpperCase() + " HANDLER ===>");
+        const locale = handlerInput.requestEnvelope.request.locale;
+        var actionQuery = await getRandomSpeech("ActionQuery", locale);
+        var spokenValue = getSpokenWords(handlerInput, "color");
+        changeLampColor(spokenValue);
+        //https://maker.ifttt.com/trigger/alexa_lamp_red/with/key/dIZTMd3bCGd2VmZGbjGTGu6qjDDVhOiVsseiEQxm7vJ
+        const speakOutput = changeVoice("The lamp has been set to " + spokenValue + ".  Tune in to twitch dot TV slash jeff blankenburg to see it change lyve on air! " + actionQuery);
+
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(changeVoice(actionQuery))
+            .getResponse();
+    }
+};
+
 const HelpIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === "IntentRequest"
@@ -411,6 +432,38 @@ function httpGet(base, filter, table = "Data"){
     }));
 }
 
+function changeLampColor(color) {
+
+//const data = JSON.stringify({
+//  todo: 'Buy the milk'
+//})
+
+const options = {
+  hostname: "maker.ifttt.com",
+  port: 443,
+  path: "/trigger/alexa_lamp_" + color + """/with/key/dIZTMd3bCGd2VmZGbjGTGu6qjDDVhOiVsseiEQxm7vJ",
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  }
+}
+
+const req = https.request(options, res => {
+  console.log(`statusCode: ${res.statusCode}`)
+
+  res.on('data', d => {
+    process.stdout.write(d)
+  })
+})
+
+req.on('error', error => {
+  console.error(error)
+})
+
+//req.write(data)
+req.end()
+}
+
 const RequestLog = {
     async process(handlerInput) {
         console.log("REQUEST ENVELOPE = " + JSON.stringify(handlerInput.requestEnvelope));
@@ -434,6 +487,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         MessageIntentHandler,
         SendMessageIntentHandler,
         LookupIntentHandler,
+        LampIntentHandler,
         FavoriteIntentHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
